@@ -12,5 +12,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setupNumberPicker()
+    }
+
+    private fun setupNumberPicker() {
+        val numberPicker = binding.numberUsersPicker
+        numberPicker.minValue = 2
+        numberPicker.maxValue = 10
+        numberPicker.wrapSelectorWheel = false
     }
 }
