@@ -2,4 +2,6 @@
     <string name="app_name">Light Mediator</string>
     <string name="submit_button">submit</string>
     <string name="number_users">How many users?</string>
+    <string name="user_1">User 1</string>
+    <string name="color_of_user">color of user</string>
 </resources>
