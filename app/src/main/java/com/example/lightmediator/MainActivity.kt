@@ -1,12 +1,13 @@
 package com.example.lightmediator
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.lightmediator.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -14,6 +15,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNumberPicker()
+
+        binding.submitButton.setOnClickListener {
+            val intent = Intent(this, ConfigConversationActivity::class.java)
+            intent.putExtra("number_users", binding.numberUsersPicker.value.toString())
+            startActivity(intent)
+        }
     }
 
     private fun setupNumberPicker() {
