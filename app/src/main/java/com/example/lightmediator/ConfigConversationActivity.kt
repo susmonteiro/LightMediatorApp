@@ -19,29 +19,41 @@ class ConfigConversationActivity : AppCompatActivity() {
         var currentUser = 1
         displayUser(currentUser, numUsers, binding)
 
-        val users = mutableListOf<User>()
+        var users = arrayListOf<User>()
 
-        binding.nextButton.setOnClickListener{
+        binding.nextButton.setOnClickListener {
             users.add(createUser(currentUser, binding))
-            displayUser(++currentUser, numUsers, binding)
+
+            if (currentUser == numUsers) {
+                var intent = Intent(this, ConversationActivity::class.java)
+                intent.putParcelableArrayListExtra("users", users)
+                startActivity(intent)
+            } else {
+                displayUser(++currentUser, numUsers, binding)
+            }
         }
 
     }
 
     private fun createUser(userId: Int, binding: ActivityConfigConversationBinding): User {
-        val name = binding.userId.text ?: "User $userId"
+        val input = binding.userId.text
+        val name = if (input.isNullOrBlank()) "User $userId" else input
 
         return User(name.toString(), userId)
     }
 
-    private fun displayUser(currentUser: Int, numUsers: Int, binding: ActivityConfigConversationBinding) {
+    private fun displayUser(
+        currentUser: Int,
+        numUsers: Int,
+        binding: ActivityConfigConversationBinding
+    ) {
         binding.userId.hint = "User $currentUser"
         binding.userId.text.clear()
         if (currentUser == numUsers) {
             binding.nextButton.text = "Start Conversation"
-            binding.nextButton.isEnabled = false
-        }
-        else
+        // todo remove me
+        //binding.nextButton.isEnabled = false
+        } else
             binding.nextButton.text = "Next User"
     }
 
