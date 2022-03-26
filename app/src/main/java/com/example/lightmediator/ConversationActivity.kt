@@ -1,5 +1,6 @@
 package com.example.lightmediator
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -18,5 +19,10 @@ class ConversationActivity : AppCompatActivity() {
         val usersText: List<String> = users!!.map { "User ${it.id}: ${it.name}" }
         binding.listOfUsers.adapter =
             ArrayAdapter(this, android.R.layout.simple_list_item_1, usersText)
+
+        binding.endButton.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
