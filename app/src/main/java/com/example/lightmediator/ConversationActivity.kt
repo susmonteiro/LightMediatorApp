@@ -1,10 +1,11 @@
 package com.example.lightmediator
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import com.example.lightmediator.databinding.ActivityConversationBinding
+import java.util.ArrayList
+
 
 class ConversationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,11 +15,18 @@ class ConversationActivity : AppCompatActivity() {
 
         val users = intent.extras?.getParcelableArrayList<User>("users")
 
-        // temporary
+        // todo temporary
         // display users
-        val usersText: List<String> = users!!.map { "User ${it.id}: ${it.name}" }
-        binding.listOfUsers.adapter =
-            ArrayAdapter(this, android.R.layout.simple_list_item_1, usersText)
+        val usersText: List<UsersListView> = users!!.map {
+            UsersListView(R.drawable.circle_color_display, it.color, it.name, "User ${it.id}")
+        }
+
+        val numbersArrayAdapter = UsersListViewAdapter(
+            this,
+            usersText as ArrayList<UsersListView>?
+        )
+
+        binding.listOfUsers.adapter = numbersArrayAdapter
 
         binding.endButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
