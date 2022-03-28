@@ -1,11 +1,13 @@
 package com.example.lightmediator
 
+import android.graphics.Color
 import android.os.Parcel
 import android.os.Parcelable
 
-data class User(val name: String?, val id: Int) : Parcelable {
+data class User(val name: String?, val id: Int, val color: Int) : Parcelable {
     constructor(source: Parcel) : this(
         source.readString(),
+        source.readInt(),
         source.readInt()
     )
 
@@ -14,6 +16,7 @@ data class User(val name: String?, val id: Int) : Parcelable {
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(name)
         writeInt(id)
+        writeInt(color)
     }
 
     companion object {
