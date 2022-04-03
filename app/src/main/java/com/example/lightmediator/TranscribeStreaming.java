@@ -17,13 +17,15 @@ import androidx.annotation.RequiresApi;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
+
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.transcribestreaming.TranscribeStreamingAsyncClient;
 import software.amazon.awssdk.services.transcribestreaming.model.*;
-import javax.sound.sampled.*;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -46,7 +48,7 @@ public class TranscribeStreaming {
     private static final int bufferSize = AudioRecord.getMinBufferSize(SAMPLERATE, CHANNELS, AUDIO_FORMAT);
     private Thread recordingThread = null;
 
-    public static void main(String args[])
+    /* public static void main(String args[])
             throws URISyntaxException, ExecutionException, InterruptedException{
 
         client = TranscribeStreamingAsyncClient.builder()
@@ -60,6 +62,25 @@ public class TranscribeStreaming {
 
         result.get();
         client.close();
+    } */
+
+    public void streaming() throws URISyntaxException, ExecutionException, InterruptedException {
+        AwsBasicCredentials awsCreds = AwsBasicCredentials.create(
+                "***REMOVED***",
+                "***REMOVED***");
+
+        client = TranscribeStreamingAsyncClient.builder()
+                .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                .region(REGION)
+                .build();
+
+        CompletableFuture<Void> result = client.startStreamTranscription(getRequest(16_000),
+                new AudioStreamPublisher(getStreamFromMic()),
+                getResponseHandler());
+
+        result.get();
+        client.close();
+
     }
 
     private static InputStream getStreamFromMic() {
@@ -67,13 +88,11 @@ public class TranscribeStreaming {
         // Signed PCM AudioFormat with 16kHz, 16 bit sample size, mono
 
         // todo check permission to use microphone
-        // @SuppressLint("MissingPermission") AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLERATE, CHANNELS, AUDIO_FORMAT, bufferSize);
+        //@SuppressLint("MissingPermission") InputStream recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLERATE, CHANNELS, AUDIO_FORMAT, bufferSize);
 
         AudioInputStream inputStream = new AudioInputStream(MediaRecorder.AudioSource.MIC, SAMPLERATE, CHANNELS, AUDIO_FORMAT, bufferSize);
 
         return inputStream;
-
-
 
         // // OLD
         // AudioFormat format = new AudioFormat(sampleRate, 16, 1, true, false);
