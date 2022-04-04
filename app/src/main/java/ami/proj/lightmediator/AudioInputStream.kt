@@ -1,4 +1,6 @@
-package com.example.lightmediator
+/*Source: https://gist.github.com/niusounds/3e49013a8e942cdba3fbfe1c336b61fc#file-audioinputstream-kt*/
+
+package ami.proj.lightmediator
 
 import android.annotation.SuppressLint
 import android.media.AudioFormat

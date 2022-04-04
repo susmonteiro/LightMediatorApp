@@ -1,4 +1,4 @@
-package com.example.lightmediator
+package ami.proj.lightmediator
 
 import android.Manifest
 import android.content.Context
@@ -8,18 +8,14 @@ import android.media.MediaRecorder
 import android.os.Bundle
 import android.util.Log
 import android.view.View.OnClickListener
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import java.io.File
 import java.io.IOException
 
 private const val LOG_TAG = "AudioRecordTest"
 private const val REQUEST_RECORD_AUDIO_PERMISSION = 200
 
-class Microphone : AppCompatActivity() {
+class StreamingAWS : AppCompatActivity() {
 
     private var fileName: String = ""
 
@@ -143,14 +139,14 @@ class Microphone : AppCompatActivity() {
 
 
         // Record to the external cache directory for visibility
-        fileName = cacheDir.absolutePath + "/mic_recording.3gp"
-        println("\n\nFILENAME: " + fileName)
+        // fileName = cacheDir.absolutePath + "/mic_recording.3gp"
+        // println("\n\nFILENAME: " + fileName)
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION)
 
-        recordButton = RecordButton(this)
-        playButton = PlayButton(this)
-        val ll = LinearLayout(this).apply {
+        // recordButton = RecordButton(this)
+        // playButton = PlayButton(this)
+        /* val ll = LinearLayout(this).apply {
             addView(recordButton,
                     LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -161,8 +157,10 @@ class Microphone : AppCompatActivity() {
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             0f))
-        }
-        setContentView(ll)
+        } */
+        // setContentView(ll)
+        val ts = TranscribeStreaming()
+        ts.streaming()
     }
 
     override fun onStop() {

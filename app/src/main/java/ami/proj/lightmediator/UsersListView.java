@@ -1,4 +1,4 @@
-package com.example.lightmediator;
+package ami.proj.lightmediator;
 
 public class UsersListView {
 

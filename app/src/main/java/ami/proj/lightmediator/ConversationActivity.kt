@@ -1,9 +1,10 @@
-package com.example.lightmediator
+package ami.proj.lightmediator
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.lightmediator.databinding.ActivityConversationBinding
+import ami.proj.lightmediator.R
+import ami.proj.lightmediator.databinding.ActivityConversationBinding
 import java.util.ArrayList
 
 

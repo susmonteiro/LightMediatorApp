@@ -1,4 +1,4 @@
-package com.example.lightmediator;
+package ami.proj.lightmediator;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import ami.proj.lightmediator.R;
 
 import java.util.ArrayList;
 

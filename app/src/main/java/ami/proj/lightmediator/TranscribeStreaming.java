@@ -1,4 +1,4 @@
-package com.example.lightmediator;
+package ami.proj.lightmediator;
 
 /*
    Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -86,29 +86,7 @@ public class TranscribeStreaming {
     private static InputStream getStreamFromMic() {
 
         // Signed PCM AudioFormat with 16kHz, 16 bit sample size, mono
-
-        // todo check permission to use microphone
-        //@SuppressLint("MissingPermission") InputStream recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLERATE, CHANNELS, AUDIO_FORMAT, bufferSize);
-
-        AudioInputStream inputStream = new AudioInputStream(MediaRecorder.AudioSource.MIC, SAMPLERATE, CHANNELS, AUDIO_FORMAT, bufferSize);
-
-        return inputStream;
-
-        // // OLD
-        // AudioFormat format = new AudioFormat(sampleRate, 16, 1, true, false);
-        // DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
-
-        // if (!AudioSystem.isLineSupported(info)) {
-        //     System.out.println("Line not supported");
-        //     System.exit(0);
-        // }
-
-        // TargetDataLine line = (TargetDataLine) AudioSystem.getLine(info);
-        // line.open(format);
-        // line.start();
-
-        // InputStream audioStream = new AudioInputStream(line);
-        // return audioStream;
+        return new AudioInputStream(MediaRecorder.AudioSource.MIC, SAMPLERATE, CHANNELS, AUDIO_FORMAT, bufferSize);
     }
 
     private static AwsCredentialsProvider getCredentials() {

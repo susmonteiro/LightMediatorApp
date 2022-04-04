@@ -1,9 +1,9 @@
-package com.example.lightmediator
+package ami.proj.lightmediator
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.lightmediator.databinding.ActivityMainBinding
+import ami.proj.lightmediator.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 

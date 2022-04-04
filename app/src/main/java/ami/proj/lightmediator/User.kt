@@ -1,6 +1,5 @@
-package com.example.lightmediator
+package ami.proj.lightmediator
 
-import android.graphics.Color
 import android.os.Parcel
 import android.os.Parcelable
 

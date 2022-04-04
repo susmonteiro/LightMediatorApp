@@ -1,15 +1,15 @@
-package com.example.lightmediator
+package ami.proj.lightmediator
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.annotation.RequiresApi
-import com.example.lightmediator.databinding.ActivityConfigConversationBinding
+import ami.proj.lightmediator.databinding.ActivityConfigConversationBinding
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 
 class ConfigConversationActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n", "NewApi")
