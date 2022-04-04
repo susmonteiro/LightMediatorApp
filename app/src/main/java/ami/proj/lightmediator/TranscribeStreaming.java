@@ -5,7 +5,6 @@ package ami.proj.lightmediator;
    SPDX-License-Identifier: Apache-2.0
 */
 
-import android.annotation.SuppressLint;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -19,15 +18,12 @@ import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.transcribestreaming.TranscribeStreamingAsyncClient;
 import software.amazon.awssdk.services.transcribestreaming.model.*;
 import java.io.*;
-import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -36,45 +32,26 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
-// snippet-start:[transcribe.java-streaming-demo]
 public class TranscribeStreaming {
     private static final Region REGION = Region.EU_WEST_2;
-    private static TranscribeStreamingAsyncClient client;
 
     // Extra
-    private static final int SAMPLERATE = 16000;
-    private static final int CHANNELS = AudioFormat.CHANNEL_CONFIGURATION_MONO;
+    private static final int SAMPLE_RATE = 16000;
+    private static final int CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
-    private static final int bufferSize = AudioRecord.getMinBufferSize(SAMPLERATE, CHANNELS, AUDIO_FORMAT);
-    private Thread recordingThread = null;
+    private static final int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNELS, AUDIO_FORMAT);
 
-    /* public static void main(String args[])
-            throws URISyntaxException, ExecutionException, InterruptedException{
-
-        client = TranscribeStreamingAsyncClient.builder()
-                .credentialsProvider(getCredentials())
-                .region(REGION)
-                .build();
-
-        CompletableFuture<Void> result = client.startStreamTranscription(getRequest(16_000),
-                new AudioStreamPublisher(getStreamFromMic()),
-                getResponseHandler());
-
-        result.get();
-        client.close();
-    } */
-
-    public void streaming() throws URISyntaxException, ExecutionException, InterruptedException {
+    public void streaming() throws ExecutionException, InterruptedException {
         AwsBasicCredentials awsCreds = AwsBasicCredentials.create(
                 "***REMOVED***",
                 "***REMOVED***");
 
-        client = TranscribeStreamingAsyncClient.builder()
+        TranscribeStreamingAsyncClient client = TranscribeStreamingAsyncClient.builder()
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
                 .region(REGION)
                 .build();
 
-        CompletableFuture<Void> result = client.startStreamTranscription(getRequest(16_000),
+        CompletableFuture<Void> result = client.startStreamTranscription(getRequest(),
                 new AudioStreamPublisher(getStreamFromMic()),
                 getResponseHandler());
 
@@ -86,36 +63,30 @@ public class TranscribeStreaming {
     private static InputStream getStreamFromMic() {
 
         // Signed PCM AudioFormat with 16kHz, 16 bit sample size, mono
-        return new AudioInputStream(MediaRecorder.AudioSource.MIC, SAMPLERATE, CHANNELS, AUDIO_FORMAT, bufferSize);
+        return new AudioInputStream(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, CHANNELS, AUDIO_FORMAT, bufferSize);
     }
 
-    private static AwsCredentialsProvider getCredentials() {
-        return DefaultCredentialsProvider.create();
-    }
 
-    private static StartStreamTranscriptionRequest getRequest(Integer mediaSampleRateHertz) {
+
+    private static StartStreamTranscriptionRequest getRequest() {
         return StartStreamTranscriptionRequest.builder()
                 .languageCode(LanguageCode.EN_US.toString())
                 .mediaEncoding(MediaEncoding.PCM)
-                .mediaSampleRateHertz(mediaSampleRateHertz)
+                .mediaSampleRateHertz(TranscribeStreaming.SAMPLE_RATE)
                 .showSpeakerLabel(true)
                 .build();
     }
 
     private static StartStreamTranscriptionResponseHandler getResponseHandler() {
         return StartStreamTranscriptionResponseHandler.builder()
-                .onResponse(r -> {
-                    System.out.println("Received Initial response");
-                })
+                .onResponse(r -> System.out.println("Received Initial response"))
                 .onError(e -> {
                     System.out.println(e.getMessage());
                     StringWriter sw = new StringWriter();
                     e.printStackTrace(new PrintWriter(sw));
-                    System.out.println("Error Occurred: " + sw.toString());
+                    System.out.println("Error Occurred: " + sw);
                 })
-                .onComplete(() -> {
-                    System.out.println("=== All records stream successfully ===");
-                })
+                .onComplete(() -> System.out.println("=== All records stream successfully ==="))
                 .subscriber(event -> {
                     List<Result> results = ((TranscriptEvent) event).transcript().results();
                     if (results.size() > 0) {
@@ -130,19 +101,9 @@ public class TranscribeStreaming {
                 .build();
     }
 
-    private InputStream getStreamFromFile(String audioFileName) {
-        try {
-            File inputFile = new File(getClass().getClassLoader().getResource(audioFileName).getFile());
-            InputStream audioStream = new FileInputStream(inputFile);
-            return audioStream;
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private static class AudioStreamPublisher implements Publisher<AudioStream> {
         private final InputStream inputStream;
-        private static Subscription currentSubscription;
+        private Subscription currentSubscription;
 
         private AudioStreamPublisher(InputStream inputStream) {
             this.inputStream = inputStream;
@@ -151,22 +112,20 @@ public class TranscribeStreaming {
         @Override
         public void subscribe(Subscriber<? super AudioStream> s) {
 
-            if (this.currentSubscription == null) {
-                this.currentSubscription = new SubscriptionImpl(s, inputStream);
-            } else {
+            if (this.currentSubscription != null) {
                 this.currentSubscription.cancel();
-                this.currentSubscription = new SubscriptionImpl(s, inputStream);
             }
+            this.currentSubscription = new SubscriptionImpl(s, inputStream);
             s.onSubscribe(currentSubscription);
         }
     }
 
     public static class SubscriptionImpl implements Subscription {
-        private static final int CHUNK_SIZE_IN_BYTES = 1024 * 1;
+        private static final int CHUNK_SIZE_IN_BYTES = 1024;
         private final Subscriber<? super AudioStream> subscriber;
         private final InputStream inputStream;
-        private ExecutorService executor = Executors.newFixedThreadPool(1);
-        private AtomicLong demand = new AtomicLong(0);
+        private final ExecutorService executor = Executors.newFixedThreadPool(1);
+        private final AtomicLong demand = new AtomicLong(0);
 
         SubscriptionImpl(Subscriber<? super AudioStream> s, InputStream inputStream) {
             this.subscriber = s;
@@ -207,10 +166,10 @@ public class TranscribeStreaming {
 
         @RequiresApi(api = Build.VERSION_CODES.N)
         private ByteBuffer getNextEvent() {
-            ByteBuffer audioBuffer = null;
+            ByteBuffer audioBuffer;
             byte[] audioBytes = new byte[CHUNK_SIZE_IN_BYTES];
 
-            int len = 0;
+            int len;
             try {
                 len = inputStream.read(audioBytes);
 
@@ -233,4 +192,3 @@ public class TranscribeStreaming {
         }
     }
 }
-// snippet-end:[transcribe.java-streaming-demo]
