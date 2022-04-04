@@ -20,12 +20,7 @@ class ConfigConversationActivity : AppCompatActivity() {
         Color.rgb(255, 0, 0),
         Color.rgb(0, 255, 0),
         Color.rgb(255, 255, 0),
-        Color.rgb(255, 0, 255),
-        Color.rgb(0, 255, 255),
-        Color.MAGENTA,
-        Color.CYAN,
-        Color.LTGRAY,
-        Color.rgb(150, 100, 200)
+        Color.rgb(255, 0, 255)
     )
 
     @RequiresApi(Build.VERSION_CODES.Q)

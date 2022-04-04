@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupNumberPicker() {
         val numberPicker = binding.numberUsersPicker
         numberPicker.minValue = 2
-        numberPicker.maxValue = 10
+        numberPicker.maxValue = 5
         numberPicker.wrapSelectorWheel = false
     }
 }
