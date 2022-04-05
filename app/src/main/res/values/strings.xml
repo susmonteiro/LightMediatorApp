@@ -6,4 +6,5 @@
     <string name="color_of_user">color of user</string>
     <string name="end_conversation">End conversation</string>
     <string name="back">back</string>
+    <string name="transcript">Transcript</string>
 </resources>
