@@ -29,6 +29,12 @@ class ConversationActivity : AppCompatActivity() {
 
         binding.listOfUsers.adapter = usersArrayAdapter
 
+        binding.transcriptButton.setOnClickListener {
+            val intent = Intent(this, TranscriptionActivity::class.java)
+            intent.putParcelableArrayListExtra("users", users)
+            startActivity(intent)
+        }
+
         binding.endButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)

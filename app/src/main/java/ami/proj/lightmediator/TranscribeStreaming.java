@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class TranscribeStreaming {
     private static final Region REGION = Region.EU_WEST_2;
+    private static String transcription = "";
 
     // Extra
     private static final int SAMPLE_RATE = 16000;
@@ -60,13 +61,15 @@ public class TranscribeStreaming {
 
     }
 
+    public String getTranscription() {
+        return transcription;
+    }
+
     private static InputStream getStreamFromMic() {
 
         // Signed PCM AudioFormat with 16kHz, 16 bit sample size, mono
         return new AudioInputStream(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, CHANNELS, AUDIO_FORMAT, bufferSize);
     }
-
-
 
     private static StartStreamTranscriptionRequest getRequest() {
         return StartStreamTranscriptionRequest.builder()
@@ -94,7 +97,9 @@ public class TranscribeStreaming {
                                 && !results.get(0).isPartial()) {
                             String speakerTag = results.get(0).alternatives().get(0).items().get(0).speaker();
                             System.out.println(speakerTag);
-                            System.out.println(results.get(0).alternatives().get(0).transcript());
+                            transcription += speakerTag;
+                            System.out.println(results.get(0).alternatives().get(0));
+                            transcription += ": " + results.get(0).alternatives().get(0).transcript() + "\n";
                         }
                     }
                 })
