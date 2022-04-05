@@ -22,12 +22,12 @@ class ConversationActivity : AppCompatActivity() {
             UsersListView(R.drawable.circle_color_display, it.color, it.name, "User ${it.id}")
         }
 
-        val numbersArrayAdapter = UsersListViewAdapter(
+        val usersArrayAdapter = UsersListViewAdapter(
             this,
             usersText as ArrayList<UsersListView>?
         )
 
-        binding.listOfUsers.adapter = numbersArrayAdapter
+        binding.listOfUsers.adapter = usersArrayAdapter
 
         binding.endButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
