@@ -16,6 +16,7 @@ class AudioInputStream(
     audioFormat: Int = AudioFormat.ENCODING_PCM_8BIT,
     bufferSizeInBytes: Int = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)) : InputStream() {
 
+
     @SuppressLint("MissingPermission")
     private val audioRecord = AudioRecord(audioSource, sampleRate, channelConfig, audioFormat, bufferSizeInBytes).apply {
         startRecording()
