@@ -1,44 +1,41 @@
 package ami.proj.lightmediator
 
 import ami.proj.lightmediator.databinding.ActivityTranscriptionBinding
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
-import android.media.AudioFormat
-import android.media.AudioRecord
-import android.media.MediaRecorder
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import android.text.method.ScrollingMovementMethod
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.*
 
-private const val REQUEST_RECORD_AUDIO_PERMISSION = 200
 
 class TranscriptionActivity : AppCompatActivity() {
 
-    // Requesting permission to RECORD_AUDIO
-    private var permissionToRecordAccepted = false
-    private var permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO)
-
-    private var audioSource = MediaRecorder.AudioSource.DEFAULT
-    private var sampleRate = 44100
-    private val channelConfig = AudioFormat.CHANNEL_IN_MONO
-    private val audioFormat = AudioFormat.ENCODING_PCM_8BIT
-    private val bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)
+    private lateinit var binding: ActivityTranscriptionBinding
+    private lateinit var transcribeService: TranscribeStreaming
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityTranscriptionBinding.inflate(layoutInflater)
+        binding = ActivityTranscriptionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val users = intent.extras?.getParcelableArrayList<User>("users")
-        val transcribeService = intent.getSerializableExtra("transcribeService") as? TranscribeStreaming
+        transcribeService = (intent.getSerializableExtra("transcribeService") as? TranscribeStreaming)!!
+
+        binding.transcriptionText.movementMethod = ScrollingMovementMethod()
+        val updater = updateText()
 
         binding.backButton.setOnClickListener {
             finish()
+            updater.cancel()
         }
+
     }
 
-
+    private fun updateText(): Job {
+        return CoroutineScope(Dispatchers.Main).launch {
+            while(isActive) {
+                binding.transcriptionText.text = transcribeService.transcription
+                delay(500)
+            }
+        }
+    }
 }

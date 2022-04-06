@@ -93,9 +93,9 @@ public class TranscribeStreaming implements Serializable {
                                 && !results.get(0).isPartial()) {
                             String speakerTag = results.get(0).alternatives().get(0).items().get(0).speaker();
                             System.out.println(speakerTag);
-                            transcription += speakerTag;
+                            transcription += "Speaker " + speakerTag + ": ";
                             System.out.println(results.get(0).alternatives().get(0));
-                            transcription += ": " + results.get(0).alternatives().get(0).transcript() + "\n";
+                            transcription += results.get(0).alternatives().get(0).transcript() + "\n\n";
                         }
                     }
                 })
