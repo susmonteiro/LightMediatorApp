@@ -47,4 +47,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation platform('software.amazon.awssdk:bom:2.15.0')
     implementation 'software.amazon.awssdk:transcribestreaming'
+    implementation 'androidx.activity:activity-ktx:1.4.0'
+    implementation 'androidx.fragment:fragment-ktx:1.4.1'
 }
