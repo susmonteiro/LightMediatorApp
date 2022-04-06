@@ -33,13 +33,11 @@ class TranscriptionActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val users = intent.extras?.getParcelableArrayList<User>("users")
+        val transcribeService = intent.getSerializableExtra("transcribeService") as? TranscribeStreaming
 
         binding.backButton.setOnClickListener {
             finish()
         }
-
-        val ts = TranscribeStreaming()
-        ts.streaming()
     }
 
 

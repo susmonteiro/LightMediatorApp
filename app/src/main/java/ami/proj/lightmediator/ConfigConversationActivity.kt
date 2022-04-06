@@ -30,6 +30,7 @@ class ConfigConversationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val numUsers = intent.getStringExtra("number_users")?.toInt() ?: 2
+        val transcribeService = intent.getSerializableExtra("transcribeService") as? TranscribeStreaming
         binding.displayNumberUsers.text = "Number of users: $numUsers"
 
         var currentUser = 1
@@ -43,6 +44,7 @@ class ConfigConversationActivity : AppCompatActivity() {
             if (currentUser == numUsers) {
                 val intent = Intent(this, ConversationActivity::class.java)
                 intent.putParcelableArrayListExtra("users", users)
+                intent.putExtra("transcribeService", transcribeService)
                 startActivity(intent)
             } else {
                 displayUser(++currentUser, numUsers, binding)

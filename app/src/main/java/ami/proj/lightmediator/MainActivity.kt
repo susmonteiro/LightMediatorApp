@@ -13,6 +13,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -28,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         ) { isGranted: Boolean ->
             if (isGranted) {
                 println("Permission granted!")
+                binding.submitButton.isEnabled = true
             } else {
                 println("Permission not granted...")
                 val intent = Intent(this, RequestPermissionActivity::class.java)
@@ -43,11 +51,13 @@ class MainActivity : AppCompatActivity() {
         setupNumberPicker()
 
         binding.submitButton.setOnClickListener {
-            val ts = TranscribeStreaming()
-            ts.streaming()
-            /*val intent = Intent(this, ConfigConversationActivity::class.java)
+            val transcribeService = TranscribeStreaming()
+            CoroutineScope(IO).launch{transcribeService.streaming()}
+            println("\nNow streaming yo\n")
+            val intent = Intent(this, ConfigConversationActivity::class.java)
             intent.putExtra("number_users", binding.numberUsersPicker.value.toString())
-            startActivity(intent)*/
+            intent.putExtra("transcribeService", transcribeService)
+            startActivity(intent)
         }
     }
 

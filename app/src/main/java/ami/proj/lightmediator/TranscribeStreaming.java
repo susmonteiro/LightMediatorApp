@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class TranscribeStreaming {
+public class TranscribeStreaming implements Serializable {
     private static final Region REGION = Region.EU_WEST_2;
     private static final int SAMPLE_RATE = 16000;
     private static final int CHANNELS = AudioFormat.CHANNEL_IN_MONO;
