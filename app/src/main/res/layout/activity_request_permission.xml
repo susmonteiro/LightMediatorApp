@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RequestPermissionActivity">
+
+    <TextView
+        android:id="@+id/request_text"
+        android:layout_width="wrap_content"
+        android:textSize="18dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="50dp"
+        android:paddingEnd="50dp"
+        android:layout_marginTop="250dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/request_permission" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/request_text"
+        android:layout_marginTop="150dp"
+        android:text="@string/give_permission"
+        android:id="@+id/request_button"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

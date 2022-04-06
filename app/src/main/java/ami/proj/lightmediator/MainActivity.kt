@@ -4,10 +4,28 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import ami.proj.lightmediator.databinding.ActivityMainBinding
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                println("Permission granted!")
+            } else {
+                println("Permission not granted...")
+                val intent = Intent(this, RequestPermissionActivity::class.java)
+                startActivity(intent)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,6 +38,18 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ConfigConversationActivity::class.java)
             intent.putExtra("number_users", binding.numberUsersPicker.value.toString())
             startActivity(intent)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        when (PackageManager.PERMISSION_DENIED) {
+            ContextCompat.checkSelfPermission(
+                this, Manifest.permission.RECORD_AUDIO
+            ) -> {
+                requestPermissionLauncher.launch(
+                    Manifest.permission.RECORD_AUDIO)
+            }
         }
     }
 

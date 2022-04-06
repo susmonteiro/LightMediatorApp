@@ -32,7 +32,7 @@ class TranscriptionActivity : AppCompatActivity() {
         val binding = ActivityTranscriptionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ActivityCompat.requestPermissions(this, permissions,0)
+        /*ActivityCompat.requestPermissions(this, permissions,0)
 
         binding.recordButton.setOnClickListener{
             if (ContextCompat.checkSelfPermission(this,
@@ -41,7 +41,7 @@ class TranscriptionActivity : AppCompatActivity() {
             } else {
                 binding.transcriptionText.text = "Ready to record!"
             }
-        }
+        } */
 
         /*ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION)
         if (permissionToRecordAccepted) {
