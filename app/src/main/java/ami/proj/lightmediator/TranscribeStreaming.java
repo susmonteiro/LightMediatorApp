@@ -39,6 +39,7 @@ public class TranscribeStreaming implements Serializable {
     private static final int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNELS, AUDIO_FORMAT);
     private static String transcription = "";
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void streaming() throws ExecutionException, InterruptedException {
         AwsBasicCredentials awsCreds = AwsBasicCredentials.create(
                 "***REMOVED***",
@@ -76,6 +77,7 @@ public class TranscribeStreaming implements Serializable {
                 .build();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private static StartStreamTranscriptionResponseHandler getResponseHandler() {
         return StartStreamTranscriptionResponseHandler.builder()
                 .onResponse(r -> System.out.println("Received Initial response"))
@@ -96,6 +98,13 @@ public class TranscribeStreaming implements Serializable {
                             transcription += "Speaker " + speakerTag + ": ";
                             System.out.println(results.get(0).alternatives().get(0));
                             transcription += results.get(0).alternatives().get(0).transcript() + "\n\n";
+
+                            Double totalTime = results.get(0).alternatives().get(0).items()
+                                    .stream()
+                                    .map(item -> item.endTime() - item.startTime())
+                                    .reduce((double) 0, Double::sum);
+
+                            System.out.println("Total time: " + totalTime);
                         }
                     }
                 })

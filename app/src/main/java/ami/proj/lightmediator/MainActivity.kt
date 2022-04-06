@@ -53,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         binding.submitButton.setOnClickListener {
             val transcribeService = TranscribeStreaming()
             CoroutineScope(IO).launch{transcribeService.streaming()}
-            println("\nNow streaming yo\n")
             val intent = Intent(this, ConfigConversationActivity::class.java)
             intent.putExtra("number_users", binding.numberUsersPicker.value.toString())
             intent.putExtra("transcribeService", transcribeService)
