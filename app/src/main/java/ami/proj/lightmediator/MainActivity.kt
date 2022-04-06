@@ -6,6 +6,9 @@ import android.os.Bundle
 import ami.proj.lightmediator.databinding.ActivityMainBinding
 import android.Manifest
 import android.content.pm.PackageManager
+import android.media.AudioFormat
+import android.media.AudioRecord
+import android.media.MediaRecorder
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -13,6 +16,11 @@ import androidx.core.content.ContextCompat
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val audioSource = MediaRecorder.AudioSource.DEFAULT
+    private val sampleRate = 44100
+    private val channelConfig = AudioFormat.CHANNEL_IN_MONO
+    private val audioFormat = AudioFormat.ENCODING_PCM_8BIT
+    private val bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -35,18 +43,24 @@ class MainActivity : AppCompatActivity() {
         setupNumberPicker()
 
         binding.submitButton.setOnClickListener {
-            val intent = Intent(this, ConfigConversationActivity::class.java)
+            val ts = TranscribeStreaming()
+            ts.streaming()
+            /*val intent = Intent(this, ConfigConversationActivity::class.java)
             intent.putExtra("number_users", binding.numberUsersPicker.value.toString())
-            startActivity(intent)
+            startActivity(intent)*/
         }
     }
 
     override fun onStart() {
         super.onStart()
-        when (PackageManager.PERMISSION_DENIED) {
+
+        when (PackageManager.PERMISSION_GRANTED) {
             ContextCompat.checkSelfPermission(
                 this, Manifest.permission.RECORD_AUDIO
             ) -> {
+                binding.submitButton.isEnabled = true
+            }
+            else -> {
                 requestPermissionLauncher.launch(
                     Manifest.permission.RECORD_AUDIO)
             }

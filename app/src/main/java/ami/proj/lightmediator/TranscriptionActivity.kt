@@ -32,66 +32,14 @@ class TranscriptionActivity : AppCompatActivity() {
         val binding = ActivityTranscriptionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        /*ActivityCompat.requestPermissions(this, permissions,0)
-
-        binding.recordButton.setOnClickListener{
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, permissions,0)
-            } else {
-                binding.transcriptionText.text = "Ready to record!"
-            }
-        } */
-
-        /*ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION)
-        if (permissionToRecordAccepted) {
-            val ts = TranscribeStreaming()
-            ts.streaming()
-        }*/
-
-        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.RECORD_AUDIO
-                )
-            ) {
-                Toast.makeText(this, "Please grant permissions to record audio", Toast.LENGTH_LONG)
-                    .show();
-
-                //Give user option to still opt-in the permissions
-                ActivityCompat.requestPermissions(
-                    this,
-                    permissions,
-                    REQUEST_RECORD_AUDIO_PERMISSION
-                );
-            } else {
-                // Show user dialog to grant permission to record audio
-                ActivityCompat.requestPermissions(
-                    this,
-                    permissions,
-                    REQUEST_RECORD_AUDIO_PERMISSION
-                );
-                val audioRecord = AudioRecord(audioSource, sampleRate, channelConfig, audioFormat, bufferSizeInBytes).apply {
-                    startRecording()
-                }
-                val transcribeService = TranscribeStreaming(audioRecord)
-                transcribeService.streaming()
-            }
-            //If permission is granted, then go ahead recording audio
-        } else if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-            val audioRecord = AudioRecord(audioSource, sampleRate, channelConfig, audioFormat, bufferSizeInBytes).apply {
-                startRecording()
-            }
-            val transcribeService = TranscribeStreaming(audioRecord)
-            transcribeService.streaming()
-        } */
-
         val users = intent.extras?.getParcelableArrayList<User>("users")
 
         binding.backButton.setOnClickListener {
             finish()
         }
+
+        val ts = TranscribeStreaming()
+        ts.streaming()
     }
 
 

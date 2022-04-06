@@ -10,10 +10,10 @@ import java.io.IOException
 import java.io.InputStream
 
 class AudioInputStream(
-    audioSource: Int = MediaRecorder.AudioSource.DEFAULT,
-    sampleRate: Int = 44100,
+    audioSource: Int = MediaRecorder.AudioSource.MIC,
+    sampleRate: Int = 16000,
     channelConfig: Int = AudioFormat.CHANNEL_IN_MONO,
-    audioFormat: Int = AudioFormat.ENCODING_PCM_8BIT,
+    audioFormat: Int = AudioFormat.ENCODING_PCM_16BIT,
     bufferSizeInBytes: Int = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)) : InputStream() {
 
 

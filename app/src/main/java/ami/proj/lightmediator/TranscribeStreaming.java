@@ -7,10 +7,10 @@ package ami.proj.lightmediator;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
-
 
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
@@ -33,11 +33,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class TranscribeStreaming {
     private static final Region REGION = Region.EU_WEST_2;
-    private static String transcription = "";
-
-    // Extra
     private static final int SAMPLE_RATE = 16000;
-
+    private static final int CHANNELS = AudioFormat.CHANNEL_IN_MONO;
+    private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
+    private static final int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNELS, AUDIO_FORMAT);
+    private static String transcription = "";
 
     public void streaming() throws ExecutionException, InterruptedException {
         AwsBasicCredentials awsCreds = AwsBasicCredentials.create(
@@ -55,7 +55,6 @@ public class TranscribeStreaming {
 
         result.get();
         client.close();
-
     }
 
     public String getTranscription() {
@@ -65,7 +64,7 @@ public class TranscribeStreaming {
     private static InputStream getStreamFromMic() {
 
         // Signed PCM AudioFormat with 16kHz, 16 bit sample size, mono
-        return new AudioInputStream();
+        return new AudioInputStream(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, CHANNELS, AUDIO_FORMAT, bufferSize);
     }
 
     private static StartStreamTranscriptionRequest getRequest() {
