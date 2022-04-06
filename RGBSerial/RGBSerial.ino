@@ -7,6 +7,7 @@ void setup() {
   pinMode(red_light_pin, OUTPUT);
   pinMode(green_light_pin, OUTPUT);
   pinMode(blue_light_pin, OUTPUT);
+  RGB_color(255, 255, 255);
 }
 
 //
