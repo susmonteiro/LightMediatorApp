@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BluetoothActivity">
+    tools:context="ami.proj.lightmediator.BluetoothActivity">
 
     <TextView
         android:id="@+id/unable_text"
