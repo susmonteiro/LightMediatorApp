@@ -17,7 +17,6 @@ class TranscriptionActivity : AppCompatActivity() {
         binding = ActivityTranscriptionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val users = intent.extras?.getParcelableArrayList<User>("users")
         transcribeService = (intent.getSerializableExtra("transcribeService") as? TranscribeStreaming)!!
 
         binding.transcriptionText.movementMethod = ScrollingMovementMethod()

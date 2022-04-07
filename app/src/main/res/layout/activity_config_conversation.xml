@@ -29,6 +29,7 @@
         tools:ignore="UseCompoundDrawables">
 
         <EditText
+            android:maxLength="20"
             android:id="@+id/user_id"
             android:layout_width="150sp"
             android:layout_height="wrap_content"

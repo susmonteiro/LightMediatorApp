@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:paddingStart="10sp"
     android:paddingEnd="10sp"
-    android:orientation="horizontal"
     tools:ignore="UselessParent">
 
     <ImageView
@@ -16,36 +16,19 @@
         android:padding="10sp"
         android:src="@drawable/circle_color_display" />
 
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/name_display"
         android:layout_width="wrap_content"
-        android:layout_height="50sp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_toEndOf="@id/small_circle_color"
         android:gravity="center_vertical"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="5sp"
-            android:gravity="bottom|left"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            tools:ignore="RtlHardcoded"
-            tools:text="Text 1" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5sp"
-            android:gravity="top|left"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
-            tools:ignore="RtlHardcoded"
-            tools:text="Text 2" />
-
-    </LinearLayout>
+        android:paddingTop="5sp"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        tools:ignore="RtlHardcoded"
+        tools:text="Name of the User" />
 
     <TextView
         android:id="@+id/time_display"
@@ -55,7 +38,7 @@
         android:layout_centerVertical="true"
         android:textColor="@android:color/black"
         android:textSize="18sp"
-        tools:ignore="RtlHardcoded"
+        tools:ignore="RelativeOverlap,RtlHardcoded"
         tools:text="Time: 2m 56s" />
 
 </RelativeLayout>

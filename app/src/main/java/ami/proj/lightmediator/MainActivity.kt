@@ -6,30 +6,20 @@ import android.os.Bundle
 import ami.proj.lightmediator.databinding.ActivityMainBinding
 import android.Manifest
 import android.content.pm.PackageManager
-import android.media.AudioFormat
-import android.media.AudioRecord
-import android.media.MediaRecorder
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.*
 
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import java.lang.Runnable
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val audioSource = MediaRecorder.AudioSource.DEFAULT
-    private val sampleRate = 44100
-    private val channelConfig = AudioFormat.CHANNEL_IN_MONO
-    private val audioFormat = AudioFormat.ENCODING_PCM_8BIT
-    private val bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)
+
+    private var job: Job? = null
+    private var transcribeService: TranscribeStreaming? = null
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -54,8 +44,8 @@ class MainActivity : AppCompatActivity() {
         setupNumberPicker()
 
         binding.submitButton.setOnClickListener {
-            val transcribeService = TranscribeStreaming()
-            CoroutineScope(IO).launch{transcribeService.streaming()}
+            transcribeService = TranscribeStreaming()
+            job = CoroutineScope(IO).launch{transcribeService?.streaming()}
             val intent = Intent(this, ConfigConversationActivity::class.java)
             intent.putExtra("number_users", binding.numberUsersPicker.value.toString())
             intent.putExtra("transcribeService", transcribeService)
@@ -65,6 +55,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        println("\nCancel the job please\n")
+        transcribeService?.close()
+        transcribeService = null
+        CoroutineScope(IO).cancel()
+        println("\nI stoppped I think\n")
 
         when (PackageManager.PERMISSION_GRANTED) {
             ContextCompat.checkSelfPermission(

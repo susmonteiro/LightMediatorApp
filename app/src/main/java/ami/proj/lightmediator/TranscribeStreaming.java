@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 public class TranscribeStreaming implements Serializable {
     private static final Region REGION = Region.EU_WEST_2;
@@ -41,6 +42,8 @@ public class TranscribeStreaming implements Serializable {
     private static String transcription = "";
 
     private static ArrayList<User> users;
+    private static TranscribeStreamingAsyncClient client;
+    private static AudioStreamPublisher publisher;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void streaming() throws ExecutionException, InterruptedException {
@@ -48,17 +51,35 @@ public class TranscribeStreaming implements Serializable {
                 "***REMOVED***",
                 "***REMOVED***");
 
-        TranscribeStreamingAsyncClient client = TranscribeStreamingAsyncClient.builder()
+        client = TranscribeStreamingAsyncClient.builder()
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
                 .region(REGION)
                 .build();
 
+        publisher = new AudioStreamPublisher(getStreamFromMic());
+
         CompletableFuture<Void> result = client.startStreamTranscription(getRequest(),
-                new AudioStreamPublisher(getStreamFromMic()),
+                publisher,
                 getResponseHandler());
 
         result.get();
         client.close();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public List<String> getTimes() {
+        return users.stream().map(User::getTimeText).collect(Collectors.toList());
+    }
+
+    public void close() {
+        publisher.subscribe(null);
+        client.close();
+        System.out.println("The client has stopped");
     }
 
     public void setUsers(ArrayList<User> listOfUsers) {
@@ -74,6 +95,7 @@ public class TranscribeStreaming implements Serializable {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static void increaseSpokenTime(int id, double time) {
         User user = findUserById(id);
+        if (user != null) System.out.println("Time: " + time + "Total time: " + user.getTimeText());
         if (user != null) user.addSpokenTime(time);
     }
 
@@ -122,8 +144,6 @@ public class TranscribeStreaming implements Serializable {
                                     .stream()
                                     .map(item -> item.endTime() - item.startTime())
                                     .reduce((double) 0, Double::sum);
-
-                            System.out.println("Total time: " + totalTime);
                             increaseSpokenTime(Integer.parseInt(speakerTag), totalTime);
                         }
                     }

@@ -20,12 +20,10 @@ data class User(val name: String?, val id: Int, val color: Int) : Parcelable {
     fun addSpokenTime(time: Double) { spokenTime += time }
 
     fun getTimeText(): String {
-        val minutes = spokenTime.toInt()
-        val seconds = (spokenTime - minutes).toInt() * 60
+        val minutes = (spokenTime/60).toInt()
+        val seconds = ((spokenTime - minutes*60)).toInt()
         return String.format("%dm %02ds", minutes, seconds)
     }
-
-
 
     override fun describeContents() = 0
 

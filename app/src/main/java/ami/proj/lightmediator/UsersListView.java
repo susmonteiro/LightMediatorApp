@@ -6,16 +6,13 @@ public class UsersListView {
 
     private final int color;
 
-    private final String text1;
+    private final String name;
 
-    private final String text2;
+    private String time;
 
-    private final String time;
-
-    public UsersListView(int CircleId, int Color, String Text1, String Text2, String Time) {
+    public UsersListView(int CircleId, int Color, String Name, String Time) {
         circleId = CircleId;
-        text1 = Text1;
-        text2 = Text2;
+        name = Name;
         color = Color;
         time = Time;
     }
@@ -28,14 +25,12 @@ public class UsersListView {
         return color;
     }
 
-    public String getText1() {
-        return text1;
-    }
-
-    public String getText2() {
-        return text2;
+    public String getName() {
+        return name;
     }
 
     public String getTime() { return time; }
+
+    public void setTime(String Time) { time = Time; }
 
 }

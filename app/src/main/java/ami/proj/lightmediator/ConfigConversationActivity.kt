@@ -33,18 +33,17 @@ class ConfigConversationActivity : AppCompatActivity() {
         val transcribeService = intent.getSerializableExtra("transcribeService") as? TranscribeStreaming
         binding.displayNumberUsers.text = "Number of users: $numUsers"
 
-        var currentUser = 1
+        var currentUser = 0
         displayUser(currentUser, numUsers, binding)
 
         val users = arrayListOf<User>()
 
         binding.nextButton.setOnClickListener {
-            users.add(createUser(currentUser, binding, colors[currentUser - 1]))
+            users.add(createUser(currentUser, binding, colors[currentUser]))
 
-            if (currentUser == numUsers) {
-                transcribeService?.setUsers(users)
+            if (currentUser == numUsers - 1) {
+                transcribeService?.users = users
                 val intent = Intent(this, ConversationActivity::class.java)
-                intent.putParcelableArrayListExtra("users", users)
                 intent.putExtra("transcribeService", transcribeService)
                 startActivity(intent)
             } else {
@@ -56,7 +55,7 @@ class ConfigConversationActivity : AppCompatActivity() {
 
     private fun createUser(userId: Int, binding: ActivityConfigConversationBinding, color: Int): User {
         val input = binding.userId.text
-        val name = if (input.isNullOrBlank()) "User $userId" else input
+        val name = if (input.isNullOrBlank()) "User ${userId + 1}" else input
 
         return User(name.toString(), userId, color)
     }
@@ -68,14 +67,12 @@ class ConfigConversationActivity : AppCompatActivity() {
         binding: ActivityConfigConversationBinding
     ) {
         with(binding) {
-            userId.hint = "User $currentUser"
+            userId.hint = "User ${currentUser + 1}"
             userId.text.clear()
             circleColor.drawable.colorFilter =
-                PorterDuffColorFilter(colors[currentUser - 1], PorterDuff.Mode.SRC_IN)
-            if (currentUser == numUsers) {
+                PorterDuffColorFilter(colors[currentUser], PorterDuff.Mode.SRC_IN)
+            if (currentUser == numUsers - 1) {
                 nextButton.text = "Start Conversation"
-                // todo remove me
-                //binding.nextButton.isEnabled = false
             } else
                 nextButton.text = "Next User"
         }

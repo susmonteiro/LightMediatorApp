@@ -44,11 +44,8 @@ public class UsersListViewAdapter extends ArrayAdapter<UsersListView> {
         circleImage.setImageResource(currentUser.getCircleId());
         circleImage.setColorFilter(currentUser.getColor());
 
-        TextView textView1 = currentItemView.findViewById(R.id.textView1);
-        textView1.setText(currentUser.getText1());
-
-        TextView textView2 = currentItemView.findViewById(R.id.textView2);
-        textView2.setText(currentUser.getText2());
+        TextView name = currentItemView.findViewById(R.id.name_display);
+        name.setText(currentUser.getName());
 
         TextView time = currentItemView.findViewById(R.id.time_display);
         time.setText(currentUser.getTime());
