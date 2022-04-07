@@ -10,6 +10,8 @@ import androidx.annotation.RequiresApi
 import ami.proj.lightmediator.databinding.ActivityConfigConversationBinding
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import kotlinx.coroutines.*
+import java.util.*
 
 class ConfigConversationActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n", "NewApi")
@@ -23,22 +25,31 @@ class ConfigConversationActivity : AppCompatActivity() {
         Color.rgb(255, 0, 255)
     )
 
+    private val textToRecognize = "This is my voice"
+    private val users = arrayListOf<User>()
+    private var speakerTag = 0
+
+    private lateinit var binding: ActivityConfigConversationBinding
+    private lateinit var transcribeService: TranscribeStreaming
+
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityConfigConversationBinding.inflate(layoutInflater)
+        binding = ActivityConfigConversationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val numUsers = intent.getStringExtra("number_users")?.toInt() ?: 2
-        val transcribeService = intent.getSerializableExtra("transcribeService") as? TranscribeStreaming
+        transcribeService = (intent.getSerializableExtra("transcribeService") as? TranscribeStreaming)!!
         binding.displayNumberUsers.text = "Number of users: $numUsers"
 
         var currentUser = 0
         displayUser(currentUser, numUsers, binding)
 
-        val users = arrayListOf<User>()
+        binding.nextButton.isEnabled = false
+        checkVoice()
 
         binding.nextButton.setOnClickListener {
+
             users.add(createUser(currentUser, binding, colors[currentUser]))
 
             if (currentUser == numUsers - 1) {
@@ -49,6 +60,7 @@ class ConfigConversationActivity : AppCompatActivity() {
             } else {
                 displayUser(++currentUser, numUsers, binding)
             }
+            checkVoice()
         }
 
     }
@@ -57,7 +69,7 @@ class ConfigConversationActivity : AppCompatActivity() {
         val input = binding.userId.text
         val name = if (input.isNullOrBlank()) "User ${userId + 1}" else input
 
-        return User(name.toString(), userId, color)
+        return User(name.toString(), speakerTag, color)
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -75,7 +87,27 @@ class ConfigConversationActivity : AppCompatActivity() {
                 nextButton.text = "Start Conversation"
             } else
                 nextButton.text = "Next User"
+            nextButton.isEnabled = false
         }
     }
 
+    private fun checkVoice(): Job {
+        println("CALLED FUNCTION")
+        binding.nextButton.isEnabled = false
+        var transcription: String
+        return CoroutineScope(Dispatchers.Main).launch {
+            while(isActive) {
+                println("Inside check voice")
+                transcription = transcribeService.lastTranscription
+                if (transcription.contains(textToRecognize, ignoreCase = true)) {
+                    speakerTag = transcribeService.lastSpeakerLabel.toInt()
+                    transcription = ""
+                    if (users.filter{user -> user.id == speakerTag}.any()) continue
+                    this.cancel()
+                    binding.nextButton.isEnabled = true
+                }
+                delay(500)
+            }
+        }
+    }
 }

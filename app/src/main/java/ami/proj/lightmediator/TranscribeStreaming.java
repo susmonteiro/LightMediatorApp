@@ -44,6 +44,8 @@ public class TranscribeStreaming implements Serializable {
     private static ArrayList<User> users;
     private static TranscribeStreamingAsyncClient client;
     private static AudioStreamPublisher publisher;
+    private static String lastTranscription = "";
+    private static String lastSpeakerLabel = "";
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void streaming() throws ExecutionException, InterruptedException {
@@ -75,6 +77,14 @@ public class TranscribeStreaming implements Serializable {
     public List<String> getTimes() {
         return users.stream().map(User::getTimeText).collect(Collectors.toList());
     }
+
+    public String getLastTranscription() {
+        String transcription = lastTranscription;
+        lastTranscription = "";
+        return transcription;
+    }
+
+    public String getLastSpeakerLabel() { return lastSpeakerLabel; }
 
     public void close() {
         publisher.subscribe(null);
@@ -134,17 +144,18 @@ public class TranscribeStreaming implements Serializable {
                     if (results.size() > 0) {
                         if (!results.get(0).alternatives().get(0).transcript().isEmpty()
                                 && !results.get(0).isPartial()) {
-                            String speakerTag = results.get(0).alternatives().get(0).items().get(0).speaker();
-                            System.out.println(speakerTag);
-                            transcription += "Speaker " + speakerTag + ": ";
-                            System.out.println(results.get(0).alternatives().get(0));
-                            transcription += results.get(0).alternatives().get(0).transcript() + "\n\n";
+                            lastSpeakerLabel = results.get(0).alternatives().get(0).items().get(0).speaker();
+                            System.out.println(lastSpeakerLabel);
+                            transcription += "Speaker " + lastSpeakerLabel + ": ";
+                            lastTranscription = results.get(0).alternatives().get(0).transcript();
+                            System.out.println(lastTranscription);
+                            transcription += lastTranscription + "\n\n";
 
                             Double totalTime = results.get(0).alternatives().get(0).items()
                                     .stream()
                                     .map(item -> item.endTime() - item.startTime())
                                     .reduce((double) 0, Double::sum);
-                            increaseSpokenTime(Integer.parseInt(speakerTag), totalTime);
+                            increaseSpokenTime(Integer.parseInt(lastSpeakerLabel), totalTime);
                         }
                     }
                 })

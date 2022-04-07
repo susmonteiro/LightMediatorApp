@@ -10,11 +10,37 @@
         android:id="@+id/display_number_users"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Number of users: X" />
+
+    <TextView
+        android:id="@+id/instruction_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/display_number_users"
+        android:text="Please say the following:"
+        android:gravity="center"
+        android:textSize="18dp"
+        android:layout_marginTop="50sp"
+        />
+
+    <TextView
+        android:id="@+id/phrase_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/instruction_text"
+        android:text="This is my voice"
+        android:gravity="center"
+        android:textSize="22dp"
+        android:layout_marginTop="20sp"
+        />
 
     <LinearLayout
         android:id="@+id/color_user"
