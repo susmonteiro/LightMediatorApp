@@ -7,6 +7,6 @@
     <string name="end_conversation">End conversation</string>
     <string name="back">back</string>
     <string name="transcript">Transcript</string>
-    <string name="request_permission">Dear User,\nPlease allow us to use the microphone of your smart device.\nOtherwise this application is completely useless.\nThank you :)</string>
+    <string name="request_permission">Dear User,\nPlease allow us to use the microphone and bluetooth of your smart device.\nOtherwise this application is completely useless.\nThank you :)</string>
     <string name="give_permission">Give permission</string>
 </resources>

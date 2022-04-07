@@ -1,24 +1,23 @@
 package ami.proj.lightmediator
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import ami.proj.lightmediator.databinding.ActivityMainBinding
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
-import android.os.Handler
-import android.os.Looper
+import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.*
-
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import java.lang.Runnable
+
+
+val LIGHT_CONNECT_CODE = 10
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,6 +27,8 @@ class MainActivity : AppCompatActivity() {
     private val channelConfig = AudioFormat.CHANNEL_IN_MONO
     private val audioFormat = AudioFormat.ENCODING_PCM_8BIT
     private val bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)
+    private var lightInterface: LightInterface? = null
+    private var connectedToLight: Boolean = false
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -49,16 +50,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNumberPicker()
-
-        binding.submitButton.setOnClickListener {
-            val transcribeService = TranscribeStreaming()
-            CoroutineScope(IO).launch{transcribeService.streaming()}
-            println("\nNow streaming yo\n")
-            val intent = Intent(this, ConfigConversationActivity::class.java)
-            intent.putExtra("number_users", binding.numberUsersPicker.value.toString())
-            intent.putExtra("transcribeService", transcribeService)
-            startActivity(intent)
-        }
     }
 
     override fun onStart() {
@@ -82,5 +73,49 @@ class MainActivity : AppCompatActivity() {
         numberPicker.minValue = 2
         numberPicker.maxValue = 5
         numberPicker.wrapSelectorWheel = false
+    }
+
+    fun submit(view: View) {
+        val transcribeService = TranscribeStreaming()
+        CoroutineScope(IO).launch{transcribeService.streaming()}
+        println("\nNow streaming yo\n")
+        val intent = Intent(this, ConfigConversationActivity::class.java)
+        intent.putExtra("number_users", binding.numberUsersPicker.value.toString())
+        intent.putExtra("transcribeService", transcribeService)
+        startActivity(intent)
+    }
+
+    fun connect(view: View) {
+        if (!connectedToLight) {
+            Store.getInstance().lightInterface = LightInterface(this)
+            this.lightInterface = Store.getInstance().lightInterface
+
+            val intent = Intent(this,BluetoothActivity::class.java)
+            startActivityForResult(intent, LIGHT_CONNECT_CODE)
+        } else {
+            this.lightInterface!!.send("{255,255,255}")
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == LIGHT_CONNECT_CODE && resultCode == RESULT_OK) {
+            markAsConnectedToLight()
+        }
+        else if (requestCode == LIGHT_CONNECT_CODE && resultCode != RESULT_OK) {
+            Toast.makeText(this, "Connect light result not ok", Toast.LENGTH_LONG)
+                .show()
+        }
+    }
+
+    private fun markAsConnectedToLight() {
+        connectedToLight = true
+        binding.connectButton.isEnabled = false
+    }
+
+    override fun finish() {
+        super.finish()
+//        this.lightInterface?.finish()
     }
 }
