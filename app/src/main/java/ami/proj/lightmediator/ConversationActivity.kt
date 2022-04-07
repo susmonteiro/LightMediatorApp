@@ -15,6 +15,7 @@ class ConversationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val users = intent.extras?.getParcelableArrayList<User>("users")
+        val transcribeService = intent.getSerializableExtra("transcribeService") as? TranscribeStreaming
 
         // todo temporary
         // display users
@@ -32,6 +33,7 @@ class ConversationActivity : AppCompatActivity() {
         binding.transcriptButton.setOnClickListener {
             val intent = Intent(this, TranscriptionActivity::class.java)
             intent.putParcelableArrayListExtra("users", users)
+            intent.putExtra("transcribeService", transcribeService)
             startActivity(intent)
         }
 

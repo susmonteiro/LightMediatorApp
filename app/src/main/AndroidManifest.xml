@@ -38,6 +38,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".RequestPermissionActivity"
+            android:exported="false" />
+        <activity
             android:name=".TranscriptionActivity"
             android:exported="false" />
         <activity
