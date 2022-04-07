@@ -24,6 +24,7 @@ import software.amazon.awssdk.services.transcribestreaming.TranscribeStreamingAs
 import software.amazon.awssdk.services.transcribestreaming.model.*;
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -38,6 +39,8 @@ public class TranscribeStreaming implements Serializable {
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
     private static final int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNELS, AUDIO_FORMAT);
     private static String transcription = "";
+
+    private static ArrayList<User> users;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void streaming() throws ExecutionException, InterruptedException {
@@ -56,6 +59,22 @@ public class TranscribeStreaming implements Serializable {
 
         result.get();
         client.close();
+    }
+
+    public void setUsers(ArrayList<User> listOfUsers) {
+        users = listOfUsers;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private static User findUserById(int id) {
+        if (users == null) return null;
+        return users.stream().filter(user -> user.getId() == id).findAny().orElse(null);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private static void increaseSpokenTime(int id, double time) {
+        User user = findUserById(id);
+        if (user != null) user.addSpokenTime(time);
     }
 
     public String getTranscription() {
@@ -105,6 +124,7 @@ public class TranscribeStreaming implements Serializable {
                                     .reduce((double) 0, Double::sum);
 
                             System.out.println("Total time: " + totalTime);
+                            increaseSpokenTime(Integer.parseInt(speakerTag), totalTime);
                         }
                     }
                 })

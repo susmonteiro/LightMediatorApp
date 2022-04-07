@@ -10,9 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import ami.proj.lightmediator.R;
-
 import java.util.ArrayList;
 
 public class UsersListViewAdapter extends ArrayAdapter<UsersListView> {
@@ -52,6 +49,9 @@ public class UsersListViewAdapter extends ArrayAdapter<UsersListView> {
 
         TextView textView2 = currentItemView.findViewById(R.id.textView2);
         textView2.setText(currentUser.getText2());
+
+        TextView time = currentItemView.findViewById(R.id.time_display);
+        time.setText(currentUser.getTime());
 
         return currentItemView;
     }

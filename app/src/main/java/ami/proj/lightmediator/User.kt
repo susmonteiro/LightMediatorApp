@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class User(val name: String?, val id: Int, val color: Int) : Parcelable {
-    private var spokenTime = 0
+    private var spokenTime = 0.0
 
     constructor(source: Parcel) : this(
         source.readString(),
@@ -12,9 +12,19 @@ data class User(val name: String?, val id: Int, val color: Int) : Parcelable {
         source.readInt()
     )
 
-    fun getSpokenTime(): Int { return spokenTime }
+    @JvmName("getId1")
+    fun getId(): Int { return id }
 
-    fun addSpokenTime(time: Int) { spokenTime += time }
+    fun getSpokenTime(): Double { return spokenTime }
+
+    fun addSpokenTime(time: Double) { spokenTime += time }
+
+    fun getTimeText(): String {
+        val minutes = spokenTime.toInt()
+        val seconds = (spokenTime - minutes).toInt() * 60
+        return String.format("%dm %02ds", minutes, seconds)
+    }
+
 
 
     override fun describeContents() = 0

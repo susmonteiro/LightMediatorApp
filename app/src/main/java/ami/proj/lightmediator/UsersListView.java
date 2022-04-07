@@ -10,11 +10,14 @@ public class UsersListView {
 
     private final String text2;
 
-    public UsersListView(int CircleId, int Color, String Text1, String Text2) {
+    private final String time;
+
+    public UsersListView(int CircleId, int Color, String Text1, String Text2, String Time) {
         circleId = CircleId;
         text1 = Text1;
         text2 = Text2;
         color = Color;
+        time = Time;
     }
 
     public int getCircleId() {
@@ -32,4 +35,7 @@ public class UsersListView {
     public String getText2() {
         return text2;
     }
+
+    public String getTime() { return time; }
+
 }

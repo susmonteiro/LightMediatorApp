@@ -42,6 +42,7 @@ class ConfigConversationActivity : AppCompatActivity() {
             users.add(createUser(currentUser, binding, colors[currentUser - 1]))
 
             if (currentUser == numUsers) {
+                transcribeService?.setUsers(users)
                 val intent = Intent(this, ConversationActivity::class.java)
                 intent.putParcelableArrayListExtra("users", users)
                 intent.putExtra("transcribeService", transcribeService)

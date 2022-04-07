@@ -3,7 +3,6 @@ package ami.proj.lightmediator
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import ami.proj.lightmediator.R
 import ami.proj.lightmediator.databinding.ActivityConversationBinding
 import java.util.ArrayList
 
@@ -20,7 +19,7 @@ class ConversationActivity : AppCompatActivity() {
         // todo temporary
         // display users
         val usersText: List<UsersListView> = users!!.map {
-            UsersListView(R.drawable.circle_color_display, it.color, it.name, "User ${it.id}")
+            UsersListView(R.drawable.circle_color_display, it.color, it.name, "User ${it.id}", it.getTimeText())
         }
 
         val usersArrayAdapter = UsersListViewAdapter(
