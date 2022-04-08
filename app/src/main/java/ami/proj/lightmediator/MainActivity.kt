@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private val channelConfig = AudioFormat.CHANNEL_IN_MONO
     private val audioFormat = AudioFormat.ENCODING_PCM_8BIT
     private val bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)
-    private var lightInterface: LightInterface? = null
+    private var lightInterface: LightInterface? = Store.getInstance().lightInterface
     private var connectedToLight: Boolean = false
 
     private val requestPermissionLauncher =
@@ -70,6 +70,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
+        if (lightInterface?.isConnected() == true) {
+            binding.connectButton.isEnabled = false
+        }
+
         println("\nCancel the job please\n")
 //        transcribeService?.close()
 //        transcribeService = null

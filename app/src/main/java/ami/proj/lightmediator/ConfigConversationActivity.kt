@@ -97,7 +97,6 @@ class ConfigConversationActivity : AppCompatActivity() {
         var transcription: String
         return CoroutineScope(Dispatchers.Main).launch {
             while(isActive) {
-                println("Inside check voice")
                 transcription = transcribeService.lastTranscription
                 if (transcription.contains(textToRecognize, ignoreCase = true)) {
                     speakerTag = transcribeService.lastSpeakerLabel.toInt()

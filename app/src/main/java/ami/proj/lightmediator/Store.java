@@ -1,7 +1,7 @@
 package ami.proj.lightmediator;
 
 public class Store {
-    private LightInterface lightInterface;
+    private LightInterface lightInterface = null;
     public LightInterface getLightInterface() {return lightInterface;}
     public void setLightInterface(LightInterface lightInterface) {this.lightInterface = lightInterface;}
 

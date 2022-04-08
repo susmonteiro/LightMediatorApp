@@ -36,6 +36,10 @@ class LightInterface(var context: Context): Serializable {
         println(this.MAC)
     }
 
+    fun isConnected(): Boolean {
+        return this.deviceInterface != null
+    }
+
     fun getPairedDevicesList(): Collection<BluetoothDevice> {
         val pairedDevices: Collection<BluetoothDevice> = bluetoothManager.getPairedDevicesList()
         return pairedDevices
