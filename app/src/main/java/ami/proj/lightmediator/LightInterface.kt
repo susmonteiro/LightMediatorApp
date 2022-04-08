@@ -68,8 +68,7 @@ class LightInterface(var context: Context): Serializable {
 
     fun onMessageSent(message: String) {
         // We sent a message! Handle it here.
-        Toast.makeText(context, "Sent a message! Message was: $message", Toast.LENGTH_LONG)
-            .show() // Replace context with your context instance.
+        Log.d("Light Interface: ", "Sent a message! Message was: $message")
     }
 
     fun onMessageReceived(message: String) {

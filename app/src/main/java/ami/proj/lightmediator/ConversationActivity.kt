@@ -7,9 +7,14 @@ import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
+import java.lang.Double.min
 
 
 class ConversationActivity : AppCompatActivity() {
+
+    // max contrast color at 30 seconds
+    private val TIME_CAP = 30
+    private val MAX_PERCENTAGE: Double = 1.0
 
     private lateinit var binding: ActivityConversationBinding
     private lateinit var transcribeService: TranscribeStreaming
@@ -33,7 +38,7 @@ class ConversationActivity : AppCompatActivity() {
         }
 
         updaterTime = updateTime(this)
-        if (lightInterface != null) updaterLight = updateLight(this)
+        if (lightInterface != null) updaterLight = updateLight()
 
         binding.transcriptButton.setOnClickListener {
             val intent = Intent(this, TranscriptionActivity::class.java)
@@ -75,7 +80,7 @@ class ConversationActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun updateLight(context: ConversationActivity): Job {
+    private fun updateLight(): Job {
         return CoroutineScope(Dispatchers.Main).launch {
             while(isActive) {
                 delay(1000)
@@ -92,16 +97,18 @@ class ConversationActivity : AppCompatActivity() {
 
                 val spokenTime = maxUser.getSpokenTime() - minUser.getSpokenTime()
 
-                lightInterface?.send(getEncodedColor(maxUser))
-                println(getEncodedColor(maxUser))
+                lightInterface?.send(getEncodedColor(maxUser, spokenTime))
             }
 
         }
     }
 
-    private fun getEncodedColor(user: User): String {
-        val userColor = user.getColor();
-        return userColor.joinToString(prefix="{", postfix = "}", separator= ",")
+    private fun getEncodedColor(user: User, time: Double): String {
+        val userColor = user.getColor()
+        val percentage = 1 - min(time / TIME_CAP, MAX_PERCENTAGE)
+        val wantedColor = userColor.map { if (it == 0) (255 * percentage).toInt() else it }
+
+        return wantedColor.joinToString(prefix="{", postfix = "}", separator= ",")
 
     }
 }
