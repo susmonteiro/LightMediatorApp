@@ -57,6 +57,7 @@ class ConfigConversationActivity : AppCompatActivity() {
                 val intent = Intent(this, ConversationActivity::class.java)
                 intent.putExtra("transcribeService", transcribeService)
                 startActivity(intent)
+                finish()
             } else {
                 displayUser(++currentUser, numUsers, binding)
             }
@@ -92,12 +93,10 @@ class ConfigConversationActivity : AppCompatActivity() {
     }
 
     private fun checkVoice(): Job {
-        println("CALLED FUNCTION")
         binding.nextButton.isEnabled = false
         var transcription: String
         return CoroutineScope(Dispatchers.Main).launch {
             while(isActive) {
-                println("Inside check voice")
                 transcription = transcribeService.lastTranscription
                 if (transcription.contains(textToRecognize, ignoreCase = true)) {
                     speakerTag = transcribeService.lastSpeakerLabel.toInt()

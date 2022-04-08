@@ -1,13 +1,12 @@
 package ami.proj.lightmediator
 
-import android.content.Intent
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import ami.proj.lightmediator.databinding.ActivityConversationBinding
+import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
-import java.util.ArrayList
 
 
 class ConversationActivity : AppCompatActivity() {
@@ -40,9 +39,10 @@ class ConversationActivity : AppCompatActivity() {
         }
 
         binding.endButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            //transcribeService.close()
+
             updater.cancel()
+            finish()
         }
     }
 
