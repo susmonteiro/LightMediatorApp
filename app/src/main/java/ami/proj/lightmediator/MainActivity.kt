@@ -75,12 +75,6 @@ class MainActivity : AppCompatActivity() {
             binding.connectButton.isEnabled = false
         }
 
-        println("\nCancel the job please\n")
-//        transcribeService?.close()
-//        transcribeService = null
-//        CoroutineScope(IO).cancel()
-        println("\nI stoppped I think\n")
-
         when (PackageManager.PERMISSION_GRANTED) {
             ContextCompat.checkSelfPermission(
                 this, Manifest.permission.RECORD_AUDIO
