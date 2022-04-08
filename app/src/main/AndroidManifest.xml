@@ -5,6 +5,22 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="true" /> <!-- Needed only if your app looks for Bluetooth devices. -->
+    <uses-feature android:name="android.software.companion_device_setup"/>
+    <!-- For android 11 and lower -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!-- For android 12 and higher -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <!--
+        Needed only if your app communicates with already-paired Bluetooth
+         devices.
+    -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,6 +28,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LightMediator">
+        <activity
+            android:name=".BluetoothActivity"
+            android:exported="false" />
         <activity
             android:name=".RequestPermissionActivity"
             android:exported="false" />

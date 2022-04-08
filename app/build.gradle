@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "ami.proj.lightmediator"
-        minSdk 21
+        minSdk 26
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -50,4 +50,10 @@ dependencies {
     implementation 'androidx.activity:activity-ktx:1.4.0'
     implementation 'androidx.fragment:fragment-ktx:1.4.1'
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1")
+
+    // Bluetooth serial
+    implementation 'com.github.harry1453:android-bluetooth-serial:v1.1'
+    // Bluetooth serial: RxJava is also required.
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 }
