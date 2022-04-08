@@ -41,10 +41,8 @@ class MainActivity : AppCompatActivity() {
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                println("Permission granted!")
                 binding.submitButton.isEnabled = true
             } else {
-                println("Permission not granted...")
                 val intent = Intent(this, RequestPermissionActivity::class.java)
                 startActivity(intent)
             }
@@ -60,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.submitButton.setOnClickListener {
             transcribeService = TranscribeStreaming()
-            job = CoroutineScope(IO).launch{transcribeService?.streaming()}
+            job = CoroutineScope(IO).launch{ kotlin.runCatching { transcribeService?.streaming() }}
             val intent = Intent(this, ConfigConversationActivity::class.java)
             intent.putExtra("number_users", binding.numberUsersPicker.value.toString())
             intent.putExtra("transcribeService", transcribeService)
@@ -90,11 +88,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupNumberPicker() {
         val numberPicker = binding.numberUsersPicker
-        numberPicker.minValue = 2
+        numberPicker.minValue = 1
         numberPicker.maxValue = 5
         numberPicker.wrapSelectorWheel = false
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     fun submit(view: View) {
         val transcribeService = TranscribeStreaming()
         CoroutineScope(IO).launch{transcribeService.streaming()}

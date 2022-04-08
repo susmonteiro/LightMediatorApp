@@ -53,10 +53,11 @@ class ConfigConversationActivity : AppCompatActivity() {
             users.add(createUser(currentUser, binding, colors[currentUser]))
 
             if (currentUser == numUsers - 1) {
-                transcribeService?.users = users
+                transcribeService.users = users
                 val intent = Intent(this, ConversationActivity::class.java)
                 intent.putExtra("transcribeService", transcribeService)
                 startActivity(intent)
+                finish()
             } else {
                 displayUser(++currentUser, numUsers, binding)
             }
@@ -92,7 +93,6 @@ class ConfigConversationActivity : AppCompatActivity() {
     }
 
     private fun checkVoice(): Job {
-        println("CALLED FUNCTION")
         binding.nextButton.isEnabled = false
         var transcription: String
         return CoroutineScope(Dispatchers.Main).launch {

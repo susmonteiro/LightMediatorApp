@@ -48,10 +48,11 @@ class ConversationActivity : AppCompatActivity() {
         }
 
         binding.endButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            transcribeService.close()
+
             updaterTime.cancel()
             updaterLight?.cancel()
+            finish()
         }
     }
 

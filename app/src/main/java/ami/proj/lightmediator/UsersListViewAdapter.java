@@ -26,8 +26,6 @@ public class UsersListViewAdapter extends ArrayAdapter<UsersListView> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        // todo change this
-
         // convertView which is recyclable view
         View currentItemView = convertView;
 
