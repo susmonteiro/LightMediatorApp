@@ -97,12 +97,14 @@ public class TranscribeStreaming implements Serializable {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static User findUserById(int id) {
+        if (users == null) return null;
         return users.stream().filter(user -> user.getId() == id).findAny().orElse(null);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static void increaseSpokenTime(int id, double time) {
         User user = findUserById(id);
+        if (user != null) System.out.println("Time: " + time + "Total time: " + user.getTimeText());
         if (user != null) user.addSpokenTime(time);
     }
 

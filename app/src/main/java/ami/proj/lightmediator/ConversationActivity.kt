@@ -39,7 +39,7 @@ class ConversationActivity : AppCompatActivity() {
         }
 
         binding.endButton.setOnClickListener {
-            //transcribeService.close()
+            transcribeService.close()
 
             updater.cancel()
             finish()
