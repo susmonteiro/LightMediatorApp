@@ -25,6 +25,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private var numberOfUsers = ""
+
     private var job: Job? = null
     private var transcribeService: TranscribeStreaming? = null
     
@@ -57,14 +59,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNumberPicker()
+        setupTimecapPicker()
 
         binding.submitButton.setOnClickListener {
-            transcribeService = TranscribeStreaming()
-            job = CoroutineScope(IO).launch{transcribeService?.streaming()}
-            val intent = Intent(this, ConfigConversationActivity::class.java)
-            intent.putExtra("number_users", binding.numberUsersPicker.value.toString())
-            intent.putExtra("transcribeService", transcribeService)
-            startActivity(intent)
+            if (binding.numberUsersPicker.visibility == View.VISIBLE) {
+                this.numberOfUsers = binding.numberUsersPicker.value.toString()
+                binding.numberUsersPicker.visibility = View.INVISIBLE
+                binding.numberUsers.visibility = View.INVISIBLE
+                binding.timecapPicker.visibility = View.VISIBLE
+                binding.timecapText.visibility = View.VISIBLE
+            } else if (binding.timecapPicker.visibility == View.VISIBLE) {
+                Store.getInstance().timecapValue = binding.timecapPicker.value
+                transcribeService = TranscribeStreaming()
+                job = CoroutineScope(IO).launch{transcribeService?.streaming()}
+                val intent = Intent(this, ConfigConversationActivity::class.java)
+                intent.putExtra("number_users", this.numberOfUsers)
+                intent.putExtra("transcribeService", transcribeService)
+                startActivity(intent)
+            }
         }
     }
 
@@ -92,6 +104,17 @@ class MainActivity : AppCompatActivity() {
         val numberPicker = binding.numberUsersPicker
         numberPicker.minValue = 2
         numberPicker.maxValue = 5
+        numberPicker.wrapSelectorWheel = false
+    }
+
+    private fun setupTimecapPicker() {
+        val numberPicker = binding.timecapPicker
+        val values = Store.timecapValues
+        numberPicker.minValue = 0
+        numberPicker.maxValue = values.size - 1
+
+        numberPicker.displayedValues = Store.timecapValues
+        numberPicker.value = 5
         numberPicker.wrapSelectorWheel = false
     }
 
@@ -134,8 +157,4 @@ class MainActivity : AppCompatActivity() {
         binding.connectButton.isEnabled = false
     }
 
-    override fun finish() {
-        super.finish()
-//        this.lightInterface?.finish()
-    }
 }

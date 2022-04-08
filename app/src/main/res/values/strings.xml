@@ -9,4 +9,5 @@
     <string name="transcript">Transcript</string>
     <string name="request_permission">Dear User,\nPlease allow us to use the microphone and bluetooth of your smart device.\nOtherwise this application is completely useless.\nThank you :)</string>
     <string name="give_permission">Give permission</string>
+    <string name="how_much_is_quot_too_much_time_quot">How much is \"too much time\"? (seconds)</string>
 </resources>
