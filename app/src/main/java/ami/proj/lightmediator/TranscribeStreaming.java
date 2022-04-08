@@ -42,23 +42,24 @@ public class TranscribeStreaming implements Serializable {
     private static String transcription = "";
 
     private static ArrayList<User> users;
-    private static TranscribeStreamingAsyncClient client;
-    private static AudioStreamPublisher publisher;
     private static String lastTranscription = "";
     private static String lastSpeakerLabel = "";
+    private static boolean stopStreaming = false;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void streaming() throws ExecutionException, InterruptedException {
+        stopStreaming = false;
+
         AwsBasicCredentials awsCreds = AwsBasicCredentials.create(
                 "***REMOVED***",
                 "***REMOVED***");
 
-        client = TranscribeStreamingAsyncClient.builder()
+        TranscribeStreamingAsyncClient client = TranscribeStreamingAsyncClient.builder()
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
                 .region(REGION)
                 .build();
 
-        publisher = new AudioStreamPublisher(getStreamFromMic());
+        AudioStreamPublisher publisher = new AudioStreamPublisher(getStreamFromMic());
 
         CompletableFuture<Void> result = client.startStreamTranscription(getRequest(),
                 publisher,
@@ -87,9 +88,7 @@ public class TranscribeStreaming implements Serializable {
     public String getLastSpeakerLabel() { return lastSpeakerLabel; }
 
     public void close() {
-        publisher.subscribe(null);
-        client.close();
-        System.out.println("The client has stopped");
+        stopStreaming = true;
     }
 
     public void setUsers(ArrayList<User> listOfUsers) {
@@ -98,14 +97,12 @@ public class TranscribeStreaming implements Serializable {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static User findUserById(int id) {
-        if (users == null) return null;
         return users.stream().filter(user -> user.getId() == id).findAny().orElse(null);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static void increaseSpokenTime(int id, double time) {
         User user = findUserById(id);
-        if (user != null) System.out.println("Time: " + time + "Total time: " + user.getTimeText());
         if (user != null) user.addSpokenTime(time);
     }
 
@@ -232,7 +229,7 @@ public class TranscribeStreaming implements Serializable {
 
             int len;
             try {
-                len = inputStream.read(audioBytes);
+                len = stopStreaming ? 0 : inputStream.read(audioBytes);
 
                 if (len <= 0) {
                     audioBuffer = ByteBuffer.allocate(0);

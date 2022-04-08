@@ -25,10 +25,8 @@ class MainActivity : AppCompatActivity() {
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                println("Permission granted!")
                 binding.submitButton.isEnabled = true
             } else {
-                println("Permission not granted...")
                 val intent = Intent(this, RequestPermissionActivity::class.java)
                 startActivity(intent)
             }
