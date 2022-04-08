@@ -60,6 +60,12 @@ class MainActivity : AppCompatActivity() {
                 binding.timecapText.visibility = View.VISIBLE
             } else if (binding.timecapPicker.visibility == View.VISIBLE) {
                 Store.getInstance().timecapValue = binding.timecapPicker.value
+                binding.timecapPicker.visibility = View.INVISIBLE
+                binding.timecapText.visibility = View.INVISIBLE
+                binding.numberUsersPicker.visibility = View.VISIBLE
+                binding.numberUsers.visibility = View.VISIBLE
+                
+                this.lightInterface?.send("{255,255,255}")
                 transcribeService = TranscribeStreaming()
                 job = CoroutineScope(IO).launch{transcribeService?.streaming()}
                 val intent = Intent(this, ConfigConversationActivity::class.java)
