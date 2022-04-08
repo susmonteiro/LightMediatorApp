@@ -104,6 +104,7 @@ class ConversationActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun getEncodedColor(user: User, time: Double): String {
         val userColor = user.getColor()
         val percentage = 1 - min(time / TIME_CAP, MAX_PERCENTAGE)

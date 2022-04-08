@@ -11,7 +11,6 @@ import ami.proj.lightmediator.databinding.ActivityConfigConversationBinding
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import kotlinx.coroutines.*
-import java.util.*
 
 class ConfigConversationActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n", "NewApi")

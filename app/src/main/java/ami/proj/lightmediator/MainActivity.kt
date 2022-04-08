@@ -7,9 +7,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import android.media.AudioFormat
-import android.media.AudioRecord
-import android.media.MediaRecorder
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -19,7 +16,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 
 
-val LIGHT_CONNECT_CODE = 10
+const val LIGHT_CONNECT_CODE = 10
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,12 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     private var job: Job? = null
     private var transcribeService: TranscribeStreaming? = null
-    
-    private val audioSource = MediaRecorder.AudioSource.DEFAULT
-    private val sampleRate = 44100
-    private val channelConfig = AudioFormat.CHANNEL_IN_MONO
-    private val audioFormat = AudioFormat.ENCODING_PCM_8BIT
-    private val bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)
+
     private var lightInterface: LightInterface? = Store.getInstance().lightInterface
     private var connectedToLight: Boolean = false
 
@@ -88,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupNumberPicker() {
         val numberPicker = binding.numberUsersPicker
-        numberPicker.minValue = 1
+        numberPicker.minValue = 2
         numberPicker.maxValue = 5
         numberPicker.wrapSelectorWheel = false
     }
@@ -96,7 +88,7 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     fun submit(view: View) {
         val transcribeService = TranscribeStreaming()
-        CoroutineScope(IO).launch{transcribeService.streaming()}
+        CoroutineScope(IO).launch{ kotlin.runCatching { transcribeService.streaming() } }
         println("\nNow streaming yo\n")
         val intent = Intent(this, ConfigConversationActivity::class.java)
         intent.putExtra("number_users", binding.numberUsersPicker.value.toString())
@@ -135,6 +127,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun finish() {
         super.finish()
-//        this.lightInterface?.finish()
+        this.lightInterface?.finish()
     }
 }

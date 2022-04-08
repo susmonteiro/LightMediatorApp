@@ -36,8 +36,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/instruction_text"
-        android:text="This is my voice"
+        android:text="This is my voice and I would like to join the conversation"
         android:gravity="center"
+        android:paddingStart="30sp"
+        android:paddingEnd="30sp"
         android:textSize="22dp"
         android:layout_marginTop="20sp"
         />
