@@ -1,5 +1,6 @@
 package ami.proj.lightmediator
 
+import android.graphics.Color
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -23,6 +24,14 @@ data class User(val name: String?, val id: Int, val color: Int) : Parcelable {
         val minutes = (spokenTime/60).toInt()
         val seconds = ((spokenTime - minutes*60)).toInt()
         return String.format("%dm %02ds", minutes, seconds)
+    }
+
+    fun getColor(): List<Int> {
+        return listOf(
+            Color.red(color),
+            Color.green(color),
+            Color.blue(color)
+        )
     }
 
     override fun describeContents() = 0

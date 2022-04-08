@@ -1,13 +1,12 @@
 package ami.proj.lightmediator
 
-import android.content.Intent
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import ami.proj.lightmediator.databinding.ActivityConversationBinding
+import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
-import java.util.ArrayList
 
 
 class ConversationActivity : AppCompatActivity() {
@@ -15,7 +14,10 @@ class ConversationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityConversationBinding
     private lateinit var transcribeService: TranscribeStreaming
     private lateinit var usersText: List<UsersListView>
-    private lateinit var updater: Job
+    private lateinit var updaterTime: Job
+    private var updaterLight: Job? = null
+
+    private val lightInterface: LightInterface? = Store.getInstance().lightInterface
 
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -30,32 +32,36 @@ class ConversationActivity : AppCompatActivity() {
             UsersListView(R.drawable.circle_color_display, it.color, it.name, it.getTimeText())
         }
 
-        updater = updateTime(this)
+        updaterTime = updateTime(this)
+        if (lightInterface != null) updaterLight = updateLight(this)
 
         binding.transcriptButton.setOnClickListener {
             val intent = Intent(this, TranscriptionActivity::class.java)
             intent.putExtra("transcribeService", transcribeService)
             startActivity(intent)
-            updater.cancel()
+            updaterTime.cancel()
         }
 
         binding.endButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            updater.cancel()
+            updaterTime.cancel()
+            updaterLight?.cancel()
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onStart() {
         super.onStart()
-        updater = updateTime(this)
+        updaterTime = updateTime(this)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun updateTime(context: ConversationActivity): Job {
         return CoroutineScope(Dispatchers.Main).launch {
             while(isActive) {
+                delay(500)
+                // screen changes
                 transcribeService.times.zip(usersText).forEach{(time, userText) -> userText.time = time
                 }
                 val usersArrayAdapter = UsersListViewAdapter(
@@ -63,8 +69,39 @@ class ConversationActivity : AppCompatActivity() {
                     usersText as ArrayList<UsersListView>?
                 )
                 binding.listOfUsers.adapter = usersArrayAdapter
-                delay(500)
             }
+
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun updateLight(context: ConversationActivity): Job {
+        return CoroutineScope(Dispatchers.Main).launch {
+            while(isActive) {
+                delay(1000)
+                val usersCopy = transcribeService.users.toList()    // making copy to avoid conflicts
+                val maxUser = usersCopy.maxWithOrNull( Comparator.comparingDouble {
+                    it.getSpokenTime()
+                })
+
+                val minUser = usersCopy.minWithOrNull( Comparator.comparingDouble {
+                    it.getSpokenTime()
+                })
+
+                if (maxUser == null || minUser == null) continue
+
+                val spokenTime = maxUser.getSpokenTime() - minUser.getSpokenTime()
+
+                lightInterface?.send(getEncodedColor(maxUser))
+                println(getEncodedColor(maxUser))
+            }
+
+        }
+    }
+
+    private fun getEncodedColor(user: User): String {
+        val userColor = user.getColor();
+        return userColor.joinToString(prefix="{", postfix = "}", separator= ",")
+
     }
 }

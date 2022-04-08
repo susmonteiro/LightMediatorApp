@@ -97,6 +97,7 @@ class ConfigConversationActivity : AppCompatActivity() {
         var transcription: String
         return CoroutineScope(Dispatchers.Main).launch {
             while(isActive) {
+                delay(500)
                 transcription = transcribeService.lastTranscription
                 if (transcription.contains(textToRecognize, ignoreCase = true)) {
                     speakerTag = transcribeService.lastSpeakerLabel.toInt()
@@ -105,7 +106,6 @@ class ConfigConversationActivity : AppCompatActivity() {
                     this.cancel()
                     binding.nextButton.isEnabled = true
                 }
-                delay(500)
             }
         }
     }
