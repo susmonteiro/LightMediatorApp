@@ -13,7 +13,7 @@ import java.lang.Double.min
 class ConversationActivity : AppCompatActivity() {
 
     // max contrast color at 30 seconds
-    private val TIME_CAP = 30
+    private val TIME_CAP = Store.getInstance().timecapValue
     private val MAX_PERCENTAGE: Double = 1.0
 
     private lateinit var binding: ActivityConversationBinding
