@@ -9,6 +9,13 @@
 - [Duarte Bento](https://github.com/DuBento)
 - [Susana Monteiro](https://github.com/susmonteiro)
 
+## Demo:
+
+
+https://github.com/user-attachments/assets/867392cd-acfa-4bd8-80de-1fc14692997d
+
+
+
 ## Required Platform
 - Smartphone with Android (it was tested in Android 12 and therefore we cannot guarantee that it works in other versions of Android). Permission to use the microphone of the device is also required
 - In order to integrate with the light (the connection to the light is not mandatory), we also need access to the bluetooth of the device. 
